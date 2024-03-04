@@ -1,0 +1,28 @@
+{
+    "name": "arifhossen/taka-format",
+    "description": "It will help php developer to convert any amount to Bangladeshi Currency format by Comma separated and in words",
+    "type": "library",
+    "require": {
+        "php": "^8.0"
+    },
+    "require-dev": {
+        "pestphp/pest": "^2.34"
+    },
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Arifhossen\\TakaFormat\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Arif hossen",
+            "email": "arifhossen.dev@gmail.com"
+        }
+    ],
+    "config": {
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    }
+}

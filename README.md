@@ -10,7 +10,7 @@ In terms of local development, you can use the following requirements:
 - PHP ^8
 - pestphp/pest: ^2.34
 
-If you have these requirements, you can start by cloning the repository and installing the dependencies:
+If you have these requirements, you can start by run this command:
 
 ```bash
 composer required arifhossen/taka-format

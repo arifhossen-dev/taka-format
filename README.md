@@ -13,7 +13,7 @@ In terms of local development, you can use the following requirements:
 If you have these requirements, you can start by run this command:
 
 ```bash
-composer required arifhossen/taka-format
+composer require arifhossen/taka-format
 ```
 
 Next, use the trait on you respective `class`

@@ -6,6 +6,8 @@ trait TakaFormat
 {
     public function takaSeperatedByComma($amount = 0): string
     {
+        $amount ?: 0; // return if $amount is null
+
         $taka = "";
 
         // split the fractional part
@@ -66,7 +68,7 @@ trait TakaFormat
             80 => 'eighty',
             90 => 'ninety'
         ];
-        $digits = array('', 'hundred', 'thousand', 'lakh', 'crore');
+        $digits = ['', 'hundred', 'thousand', 'lakh', 'crore'];
         while ($i < $digits_length) {
             $divider = ($i == 2) ? 10 : 100;
             $amount = floor($no % $divider);

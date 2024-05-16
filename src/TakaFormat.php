@@ -84,6 +84,6 @@ trait TakaFormat
         }
         $Taka = implode('', array_reverse($str));
         $poysa = ($decimal) ? " and ".($words[$decimal / 10]." ".$words[$decimal % 10]).' poysa' : '';
-        return ($Taka ? $Taka.'taka ' : '').$poysa;
+        return ucwords(($Taka ? $Taka.'taka ' : '').$poysa);
     }
 }

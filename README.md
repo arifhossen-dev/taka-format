@@ -21,8 +21,8 @@ Next, use the trait on you respective `class`
 ```bash
 use TakaFormat;
 
-$this->takaSeperatedByComma(199990)) // ৳1,99,990
-$this->takaInWords(199990)) // One lakh ninety Nine thousands Nine hundred and ninety taka
+$this->takaSeperatedByComma(199990) // ৳1,99,990
+$this->takaInWords(199990) // One lakh ninety Nine thousands Nine hundred and ninety taka
 
 ```
 

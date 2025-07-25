@@ -1,5 +1,5 @@
 # About
-This is a php library. It will help php developer to convert any amount to Bangladeshi Currency format by Comma separated and in words in Bangladeshi way.
+This is a php library. It will help php developer to convert any amount to Bangladeshi Currency format by comma-separated (e.g. `৳1,50,395`) and in words in the Bangladeshi way.
 
 ## Installation
 

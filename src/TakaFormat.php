@@ -4,40 +4,72 @@ namespace Arifhossen\TakaFormat;
 
 trait TakaFormat
 {
+    /**
+     * Format a number as Bangladeshi Taka with comma separation.
+     *
+     * @param float|int|string $amount
+     * @return string
+     */
     public function takaSeperatedByComma($amount = 0): string
     {
-        $amount ?: 0; // return if $amount is null
+        // Ensure $amount is numeric and not null/empty
+        $amount = (float)($amount ?? 0);
 
-        $taka = "";
+        // Split integer and fractional parts
+        $parts = explode('.', number_format($amount, 2, '.', ''));
 
-        // split the fractional part
-        $amountArr = explode('.', $amount);
+        $integerPart = $parts[0];
+        $fractionalPart = $parts[1] ?? null;
 
-        $taka .= substr($amountArr[0], -3, 3); // to get hundreds
-        $restAmount = substr($amountArr[0], 0, -3);
-
-        while (strlen($restAmount) > 0) {
-            $taka = substr($restAmount, -2, 2).','.$taka;
-            $restAmount = substr($restAmount, 0, -2);
+        // Handle negative numbers
+        $isNegative = false;
+        if (strpos($integerPart, '-') === 0) {
+            $isNegative = true;
+            $integerPart = ltrim($integerPart, '-');
         }
 
-        // adding fractional part if exists
-        if (isset($amountArr[1])) {
-            $taka = $taka.".".$amountArr[1];
+        // Format integer part in Bangladeshi style
+        $formatted = '';
+        $len = strlen($integerPart);
+
+        if ($len > 3) {
+            $formatted = substr($integerPart, -3);
+            $integerPart = substr($integerPart, 0, $len - 3);
+
+            while (strlen($integerPart) > 0) {
+                $formatted = substr($integerPart, -2) . ',' . $formatted;
+                $integerPart = substr($integerPart, 0, -2);
+            }
+        } else {
+            $formatted = $integerPart;
         }
 
-        return "৳".$taka;
+        // Add fractional part if exists
+        if ($fractionalPart !== null && $fractionalPart !== '00') {
+            $formatted .= '.' . $fractionalPart;
+        }
+
+        $result = ($isNegative ? '-' : '') . "৳" . $formatted;
+        return $result;
     }
 
+    /**
+     * Convert a number to Bangladeshi Taka in words.
+     *
+     * @param float|int|string|null $amount
+     * @return string
+     */
     public function takaInWords($amount = null): string
     {
-        $amount ?: ""; // return if $amount is null
+        $amount = (float)($amount ?? 0);
 
-        $decimal = round($amount - ($no = floor($amount)), 2) * 100;
-        $hundred = null;
-        $digits_length = strlen($no);
-        $i = 0;
-        $str = [];
+        if ($amount == 0) {
+            return 'Zero Taka';
+        }
+
+        $no = floor($amount);
+        $decimal = round(($amount - $no) * 100);
+
         $words = [
             0 => '',
             1 => 'One',
@@ -50,40 +82,62 @@ trait TakaFormat
             8 => 'Eight',
             9 => 'Nine',
             10 => 'Ten',
-            11 => 'eleven',
-            12 => 'twelve',
-            13 => 'thirteen',
-            14 => 'fourteen',
-            15 => 'fifteen',
-            16 => 'sixteen',
-            17 => 'seventeen',
-            18 => 'eighteen',
-            19 => 'nineteen',
-            20 => 'twenty',
-            30 => 'thirty',
-            40 => 'forty',
-            50 => 'fifty',
-            60 => 'sixty',
-            70 => 'seventy',
-            80 => 'eighty',
-            90 => 'ninety'
+            11 => 'Eleven',
+            12 => 'Twelve',
+            13 => 'Thirteen',
+            14 => 'Fourteen',
+            15 => 'Fifteen',
+            16 => 'Sixteen',
+            17 => 'Seventeen',
+            18 => 'Eighteen',
+            19 => 'Nineteen',
+            20 => 'Twenty',
+            30 => 'Thirty',
+            40 => 'Forty',
+            50 => 'Fifty',
+            60 => 'Sixty',
+            70 => 'Seventy',
+            80 => 'Eighty',
+            90 => 'Ninety'
         ];
-        $digits = ['', 'hundred', 'thousand', 'lakh', 'crore'];
-        while ($i < $digits_length) {
-            $divider = ($i == 2) ? 10 : 100;
-            $amount = floor($no % $divider);
-            $no = floor($no / $divider);
-            $i += $divider == 10 ? 1 : 2;
-            if ($amount) {
-                $plural = (($counter = count($str)) && $amount > 9) ? 's' : null;
-                $hundred = ($counter == 1 && $str[0]) ? ' and ' : null;
-                $str [] = ($amount < 21) ? $words[$amount].' '.$digits[$counter].$plural.' '.$hundred : $words[floor($amount / 10) * 10].' '.$words[$amount % 10].' '.$digits[$counter].$plural.' '.$hundred;
+        $digits = ['', 'Hundred', 'Thousand', 'Lakh', 'Crore'];
+
+        $str = [];
+        $i = 0;
+        $digits_length = strlen($no);
+
+        while ($no > 0) {
+            $divider = ($i == 1) ? 10 : 100;
+            $number = $no % $divider;
+            $no = (int)($no / $divider);
+
+            if ($number) {
+                $counter = count($str);
+                $plural = ($counter && $number > 9) ? 's' : '';
+                $hundred = ($counter == 1 && isset($str[0]) && $str[0]) ? ' and ' : '';
+                if ($number < 21) {
+                    $str[] = $words[$number] . ' ' . $digits[$counter] . $plural . $hundred;
+                } else {
+                    $str[] = $words[floor($number / 10) * 10] . ' ' . $words[$number % 10] . ' ' . $digits[$counter] . $plural . $hundred;
+                }
             } else {
                 $str[] = null;
             }
+            $i += ($divider == 10) ? 1 : 2;
         }
-        $Taka = implode('', array_reverse($str));
-        $poysa = ($decimal) ? " and ".($words[$decimal / 10]." ".$words[$decimal % 10]).' poysa' : '';
-        return ucwords(($Taka ? $Taka.'taka ' : '').$poysa);
+
+        $taka = implode('', array_reverse(array_filter($str)));
+        $poysa = '';
+
+        if ($decimal) {
+            if ($decimal < 21) {
+                $poysa = ' and ' . $words[$decimal] . ' Poysa';
+            } else {
+                $poysa = ' and ' . $words[floor($decimal / 10) * 10] . ' ' . $words[$decimal % 10] . ' Poysa';
+            }
+        }
+
+        $result = trim($taka ? $taka . 'Taka' : '') . $poysa;
+        return ucwords(trim($result));
     }
 }
